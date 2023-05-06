@@ -5,6 +5,6 @@
 
 ### Todo
 
--[x] Add github action to build and submit dependency graph on every push
-- [x] Analyze on SonarSource
-- [] 
+- [x] Add github action to build and submit dependency graph on every push
+- [x] Configure Automatic Analysis on SonarCloud
+- [ ] Switch to CI-based analysis
