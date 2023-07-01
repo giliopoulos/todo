@@ -1,0 +1,6 @@
+databaseChangeLog:
+  -
+  - include:
+      file: db/migration/sql/1-create-schema-and-tables.sql
+  - include:
+      file: db/migration/sql/2-insert-initial-data.sql

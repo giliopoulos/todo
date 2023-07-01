@@ -1,6 +1,9 @@
+--liquibase formatted sql
+--changeset giliopoulos:1
+
 -- Shcema notes
 -- --------------------
--- Serial is chosen as a type for primary keys
+-- Serial type for primary keys
 -- todo_status is an enum
 -- TIMESTAMPTZ is chosen over TIMESTAMP so it includes timezone info
 -- A person can have 0..N todos. A todo belongs to exactly one person
@@ -14,7 +17,10 @@
 -- When a person gets deleted the todos and collaborations get deleted too
 --
 
-CREATE TABLE person
+CREATE SCHEMA IF NOT EXISTS todo_schema;
+SET SEARCH_PATH = todo_schema;
+
+CREATE TABLE IF NOT EXISTS person
 (
     person_id SERIAL PRIMARY KEY,
     name      VARCHAR(100)        NOT NULL,
@@ -23,9 +29,10 @@ CREATE TABLE person
     password  VARCHAR(255)        NOT NULL
 );
 
-CREATE TYPE todo_status_enum AS ENUM ('pending', 'completed');
+DROP TYPE IF EXISTS todo_schema.todo_status_enum;
+CREATE TYPE todo_schema.todo_status_enum AS ENUM ('PENDING', 'COMPLETED');
 
-CREATE TABLE todo
+CREATE TABLE IF NOT EXISTS todo
 (
     todo_id      SERIAL PRIMARY KEY,
     title        VARCHAR(255)     NOT NULL,
@@ -37,7 +44,7 @@ CREATE TABLE todo
     FOREIGN KEY (person_id) REFERENCES person (person_id) ON DELETE CASCADE
 );
 
-CREATE TABLE collaboration
+CREATE TABLE IF NOT EXISTS collaboration
 (
     collaboration_id SERIAL PRIMARY KEY,
     person_id        INT NOT NULL,
@@ -47,7 +54,7 @@ CREATE TABLE collaboration
     CONSTRAINT unique_collaboration UNIQUE (person_id, todo_id)
 );
 
-CREATE TABLE note
+CREATE TABLE IF NOT EXISTS note
 (
     note_id    SERIAL PRIMARY KEY,
     content    TEXT NOT NULL,
@@ -56,11 +63,11 @@ CREATE TABLE note
     FOREIGN KEY (todo_id) REFERENCES todo (todo_id) ON DELETE CASCADE
 );
 
-CREATE TABLE reminder
+CREATE TABLE IF NOT EXISTS reminder
 (
     reminder_id   SERIAL PRIMARY KEY,
     reminder_date DATE NOT NULL,
-    reminder_time TIME NOT NULL,
+    reminder_time TIME WITH TIME ZONE NOT NULL,
     todo_id       INT  NOT NULL,
     FOREIGN KEY (todo_id) REFERENCES todo (todo_id) ON DELETE CASCADE
 );
