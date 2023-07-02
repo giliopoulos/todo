@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset giliopoulos:2 contextFilter:local
+--changeset giliopoulos:2 contextFilter:local-dev,integration-tests
 
 
 SET SEARCH_PATH = todo_schema;
