@@ -11,11 +11,11 @@ VALUES
     ('Jane', 'Smith', 'jane.smith@example.com', 'password2');
 
 -- Insert initial data into the 'todo' table
-INSERT INTO todo (title, description, status, person_id)
+INSERT INTO todo (title, description, status, created_at, person_id)
 VALUES
-    ('Task 1', 'This is task 1', 'PENDING', 1),
-    ('Task 2', 'This is task 2', 'COMPLETED', 1),
-    ('Task 3', 'This is task 3', 'PENDING', 2);
+    ('Task 1', 'This is task 1', 'PENDING', '2023-07-01 16:08:21.111427 +00:00',1),
+    ('Task 2', 'This is task 2', 'COMPLETED', '2023-07-01 16:08:21.111427 +00:00', 1),
+    ('Task 3', 'This is task 3', 'PENDING', '2023-07-01 16:08:21.111427 +00:00', 2);
 
 -- Insert initial data into the 'notes' table
 INSERT INTO note (content, todo_id)
