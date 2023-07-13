@@ -20,12 +20,6 @@ class TodoApplicationTests {
 			.withUsername("foo")
 			.withPassword("secret");
 
-/*	@DynamicPropertySource
-	private static void setupProperties(DynamicPropertyRegistry registry) {
-		registry.add("spring.datasource.url", postgresqlContainer::getJdbcUrl);
-		registry.add("spring.datasource.username", postgresqlContainer::getUsername);
-		registry.add("spring.datasource.password", postgresqlContainer::getPassword);
-	}*/
 	@Test
 	void contextLoads(ApplicationContext context) {
 		Assertions.assertNotNull(context);
