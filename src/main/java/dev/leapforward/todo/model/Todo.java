@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 @Entity
@@ -31,9 +32,11 @@ public class Todo {
     @Basic
     @Column(name = "completed_at", nullable = true)
     private LocalDateTime completedAt;
-    @Basic
-    @Column(name = "person_id", nullable = false)
-    private int personId;
+
+    //@Fetch(FetchMode.JOIN)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id")
+    private Person person;
 
     public int getId() {
         return id;
@@ -83,30 +86,26 @@ public class Todo {
         this.completedAt = completedAt;
     }
 
-    public int getPersonId() {
-        return personId;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setPersonId(int personId) {
-        this.personId = personId;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Todo todo = (Todo) o;
+        if (!(o instanceof Todo todo)) return false;
 
         if (id != todo.id) return false;
-        if (personId != todo.personId) return false;
-        if (title != null ? !title.equals(todo.title) : todo.title != null) return false;
-        if (description != null ? !description.equals(todo.description) : todo.description != null) return false;
-        if (status != null ? !status.equals(todo.status) : todo.status != null) return false;
-        if (createdAt != null ? !createdAt.equals(todo.createdAt) : todo.createdAt != null) return false;
-        if (completedAt != null ? !completedAt.equals(todo.completedAt) : todo.completedAt != null) return false;
-
-        return true;
+        if (!Objects.equals(title, todo.title)) return false;
+        if (!Objects.equals(description, todo.description)) return false;
+        if (status != todo.status) return false;
+        if (!Objects.equals(createdAt, todo.createdAt)) return false;
+        if (!Objects.equals(completedAt, todo.completedAt)) return false;
+        return Objects.equals(person, todo.person);
     }
 
     @Override
@@ -117,7 +116,7 @@ public class Todo {
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
         result = 31 * result + (completedAt != null ? completedAt.hashCode() : 0);
-        result = 31 * result + personId;
+        result = 31 * result + (person != null ? person.hashCode() : 0);
         return result;
     }
 
@@ -130,7 +129,7 @@ public class Todo {
                 .add("status=" + status)
                 .add("createdAt=" + createdAt)
                 .add("completedAt=" + completedAt)
-                .add("personId=" + personId)
+                .add("person=" + person)
                 .toString();
     }
 }

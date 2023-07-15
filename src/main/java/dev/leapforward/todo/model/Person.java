@@ -2,7 +2,10 @@ package dev.leapforward.todo.model;
 
 import jakarta.persistence.*;
 
+import java.util.StringJoiner;
+
 @Entity
+@Table(name = "person", schema = "todo_schema")
 public class Person {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
@@ -85,5 +88,16 @@ public class Person {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Person.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("name='" + name + "'")
+                .add("surname='" + surname + "'")
+                .add("email='" + email + "'")
+                .add("password='" + password + "'")
+                .toString();
     }
 }
