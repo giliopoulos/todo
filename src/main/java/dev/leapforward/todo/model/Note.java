@@ -3,9 +3,12 @@ package dev.leapforward.todo.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.StringJoiner;
 
 @Entity
+@Table(name = "note", schema = "todo_schema")
 public class Note {
+
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     @Column(name = "note_id", nullable = false)
@@ -16,9 +19,9 @@ public class Note {
     @Basic
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    @Basic
-    @Column(name = "todo_id", nullable = false)
-    private int todoId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todo_id")
+    private Todo todo;
 
     public int getId() {
         return id;
@@ -44,35 +47,40 @@ public class Note {
         this.createdAt = createdAt;
     }
 
-    public int getTodoId() {
-        return todoId;
+    public Todo getTodo() {
+        return todo;
     }
 
-    public void setTodoId(int todoId) {
-        this.todoId = todoId;
+    public void setTodo(Todo todo) {
+        this.todo = todo;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Note note = (Note) o;
+        if (!(o instanceof Note note)) return false;
 
         if (id != note.id) return false;
-        if (todoId != note.todoId) return false;
-        if (content != null ? !content.equals(note.content) : note.content != null) return false;
-        if (createdAt != null ? !createdAt.equals(note.createdAt) : note.createdAt != null) return false;
-
-        return true;
+        if (!content.equals(note.content)) return false;
+        if (!createdAt.equals(note.createdAt)) return false;
+        return todo.equals(note.todo);
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (content != null ? content.hashCode() : 0);
-        result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
-        result = 31 * result + todoId;
+        result = 31 * result + content.hashCode();
+        result = 31 * result + createdAt.hashCode();
+        result = 31 * result + todo.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Note.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("content='" + content + "'")
+                .add("createdAt=" + createdAt)
+                .toString();
     }
 }

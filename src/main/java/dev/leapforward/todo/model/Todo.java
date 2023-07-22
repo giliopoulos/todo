@@ -5,14 +5,17 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 @Entity
 @Table(name = "todo", schema = "todo_schema")
 public class Todo {
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "todo_seq")
+    @SequenceGenerator(name = "todo_seq", schema = "todo_schema", sequenceName = "todo_todo_id_seq")
     @Column(name = "todo_id", nullable = false)
     private int id;
     @Basic
@@ -33,11 +36,35 @@ public class Todo {
     @Column(name = "completed_at", nullable = true)
     private LocalDateTime completedAt;
 
-    //@Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     private Person person;
 
+    //mappedBy indicates that the owning side is the Note entity @ManyToOne
+    @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Note> notes;
+    @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reminder> reminders;
+
+    public void addNote(Note note) {
+        notes.add(note);
+        note.setTodo(this);
+    }
+
+    public void removeNote(Note note) {
+        notes.remove(note);
+        note.setTodo(null);
+    }
+
+    public void addReminder(Reminder reminder) {
+        reminders.add(reminder);
+        reminder.setTodo(this);
+    }
+
+    public void removeReminder(Reminder reminder) {
+        reminders.remove(reminder);
+        reminder.setTodo(null);
+    }
     public int getId() {
         return id;
     }
@@ -94,6 +121,22 @@ public class Todo {
         this.person = person;
     }
 
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+
+    public List<Reminder> getReminders() {
+        return reminders;
+    }
+
+    public void setReminders(List<Reminder> reminders) {
+        this.reminders = reminders;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -105,7 +148,9 @@ public class Todo {
         if (status != todo.status) return false;
         if (!Objects.equals(createdAt, todo.createdAt)) return false;
         if (!Objects.equals(completedAt, todo.completedAt)) return false;
-        return Objects.equals(person, todo.person);
+        if (!Objects.equals(person, todo.person)) return false;
+        if (!Objects.equals(notes, todo.notes)) return false;
+        return Objects.equals(reminders, todo.reminders);
     }
 
     @Override
@@ -117,6 +162,8 @@ public class Todo {
         result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
         result = 31 * result + (completedAt != null ? completedAt.hashCode() : 0);
         result = 31 * result + (person != null ? person.hashCode() : 0);
+        result = 31 * result + (notes != null ? notes.hashCode() : 0);
+        result = 31 * result + (reminders != null ? reminders.hashCode() : 0);
         return result;
     }
 
@@ -130,6 +177,8 @@ public class Todo {
                 .add("createdAt=" + createdAt)
                 .add("completedAt=" + completedAt)
                 .add("person=" + person)
+                .add("notes=" + notes)
+                .add("reminders=" + reminders)
                 .toString();
     }
 }

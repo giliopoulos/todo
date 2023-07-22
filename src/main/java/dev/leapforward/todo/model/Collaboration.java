@@ -3,17 +3,20 @@ package dev.leapforward.todo.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "collaboration", schema = "todo_schema")
 public class Collaboration {
+
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     @Column(name = "collaboration_id", nullable = false)
     private int id;
-    @Basic
-    @Column(name = "person_id", nullable = false)
-    private int personId;
-    @Basic
-    @Column(name = "todo_id", nullable = false)
-    private int todoId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id")
+    private Person person;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todo_id")
+    private Todo todo;
 
     public int getId() {
         return id;
@@ -23,41 +26,37 @@ public class Collaboration {
         this.id = id;
     }
 
-    public int getPersonId() {
-        return personId;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setPersonId(int personId) {
-        this.personId = personId;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
-    public int getTodoId() {
-        return todoId;
+    public Todo getTodo() {
+        return todo;
     }
 
-    public void setTodoId(int todoId) {
-        this.todoId = todoId;
+    public void setTodo(Todo todo) {
+        this.todo = todo;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Collaboration that = (Collaboration) o;
+        if (!(o instanceof Collaboration that)) return false;
 
         if (id != that.id) return false;
-        if (personId != that.personId) return false;
-        if (todoId != that.todoId) return false;
-
-        return true;
+        if (!person.equals(that.person)) return false;
+        return todo.equals(that.todo);
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + personId;
-        result = 31 * result + todoId;
+        result = 31 * result + person.hashCode();
+        result = 31 * result + todo.hashCode();
         return result;
     }
 }

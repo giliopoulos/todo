@@ -7,6 +7,7 @@ import java.util.StringJoiner;
 @Entity
 @Table(name = "person", schema = "todo_schema")
 public class Person {
+
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     @Column(name = "person_id", nullable = false)
