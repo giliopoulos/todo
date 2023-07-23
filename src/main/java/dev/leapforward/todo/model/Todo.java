@@ -25,9 +25,9 @@ public class Todo {
     @Column(name = "description", length = -1)
     private String description;
 
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, columnDefinition = "todo_status_enum")
     @Type(PostgreSQLEnumType.class)
+    @Enumerated(EnumType.STRING)
     private TodoStatus status;
     @Basic
     @Column(name = "created_at")

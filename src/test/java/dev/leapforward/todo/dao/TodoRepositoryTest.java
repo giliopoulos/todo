@@ -1,16 +1,17 @@
 package dev.leapforward.todo.dao;
 
 import dev.leapforward.todo.AbstractContainerBaseTest;
+import dev.leapforward.todo.model.Person;
 import dev.leapforward.todo.model.Todo;
 import dev.leapforward.todo.model.TodoStatus;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,11 +23,14 @@ class TodoRepositoryTest extends AbstractContainerBaseTest {
     @Autowired
     private TodoRepository todoRepository;
 
+    @Autowired
+    private PersonRepository personRepository;
+
     @Test
     void should_bePresent_when_dbIsSetup() {
-        Optional<Todo> todo = todoRepository.findById(1);
+        Long count = todoRepository.count();
 
-        assertTrue(todo.isPresent());
+        assertEquals(3,count);
     }
 
     @Test
@@ -40,26 +44,28 @@ class TodoRepositoryTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    void should_saveNewTodo() {
+    void should_throwException_when_PersonNotSpecified() {
         Todo todo = new Todo();
         todo.setStatus(TodoStatus.PENDING);
         todo.setTitle("Test tile");
         todo.setDescription("A test description");
-        //todo.setPerson();
 
-        System.out.println("Before save: " + todo);
-        Todo saved = todoRepository.save(todo);
-        System.out.println("After save: " + saved);
-        System.out.println(saved.getId());
+        Assertions.assertThrows(DataIntegrityViolationException.class, () -> todoRepository.saveAndFlush(todo));
+    }
 
-        Todo todo1 = new Todo();
-        todo1.setStatus(TodoStatus.PENDING);
-        todo1.setTitle("Test 2");
-        todo1.setDescription("A test description");
+    @Test
+    void should_saveNewTodoForPersonWithId() {
 
-        Todo saved1 = todoRepository.save(todo1);
-        System.out.println("After save: " + saved1);
+        Person person = personRepository.getReferenceById(1);
 
+        Todo todo = new Todo();
+        todo.setStatus(TodoStatus.PENDING);
+        todo.setTitle("Test tile");
+        todo.setDescription("A test description");
+        todo.setPerson(person);
 
+        todoRepository.save(todo);
+
+        assertEquals(3, todoRepository.findTodosByPersonId(1,PageRequest.of(0, 10)).getTotalElements());
     }
 }
