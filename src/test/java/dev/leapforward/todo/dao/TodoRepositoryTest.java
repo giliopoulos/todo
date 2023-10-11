@@ -16,7 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TodoRepositoryTest extends AbstractContainerBaseTest {
 

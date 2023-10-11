@@ -10,7 +10,7 @@ public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_seq")
-    @SequenceGenerator(name = "person_seq", schema = "todo_schema", sequenceName = "person_person_id_seq")
+    @SequenceGenerator(name = "person_seq", schema = "todo_schema", sequenceName = "person_person_id_seq", allocationSize = 1)
     @Column(name = "person_id", nullable = false)
     private int id;
     @Basic

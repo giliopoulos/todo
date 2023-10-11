@@ -10,10 +10,12 @@ import java.util.StringJoiner;
 @Table(name = "reminder", schema = "todo_schema")
 public class Reminder {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reminder_seq")
+    @SequenceGenerator(name = "reminder_seq", schema = "todo_schema", sequenceName = "reminder_reminder_id_seq", allocationSize = 1)
     @Column(name = "reminder_id", nullable = false)
     private int id;
+
     @Basic
     @Column(name = "reminder_date", nullable = false)
     private LocalDate reminderDate;

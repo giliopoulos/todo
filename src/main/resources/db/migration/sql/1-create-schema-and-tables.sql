@@ -29,15 +29,12 @@ CREATE TABLE IF NOT EXISTS person
     password  VARCHAR(255)        NOT NULL
 );
 
-DROP TYPE IF EXISTS todo_schema.todo_status_enum;
-CREATE TYPE todo_schema.todo_status_enum AS ENUM ('PENDING', 'COMPLETED');
-
 CREATE TABLE IF NOT EXISTS todo
 (
     todo_id      SERIAL PRIMARY KEY,
     title        VARCHAR(255)     NOT NULL,
     description  TEXT,
-    status       todo_status_enum NOT NULL,
+    status       VARCHAR(50) NOT NULL,
     created_at   TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMPTZ,
     person_id    INT              NOT NULL,

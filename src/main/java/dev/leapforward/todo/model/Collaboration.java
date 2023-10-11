@@ -6,10 +6,12 @@ import jakarta.persistence.*;
 @Table(name = "collaboration", schema = "todo_schema")
 public class Collaboration {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "collaboration_seq")
+    @SequenceGenerator(name = "collaboration_seq", schema = "todo_schema", sequenceName = "collaboration_collaboration_id_seq", allocationSize = 1)
     @Column(name = "collaboration_id", nullable = false)
     private int id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     private Person person;

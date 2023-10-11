@@ -9,8 +9,9 @@ import java.util.StringJoiner;
 @Table(name = "note", schema = "todo_schema")
 public class Note {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "note_seq")
+    @SequenceGenerator(name = "note_seq", schema = "todo_schema", sequenceName = "note_note_id_seq", allocationSize = 1)
     @Column(name = "note_id", nullable = false)
     private int id;
     @Basic

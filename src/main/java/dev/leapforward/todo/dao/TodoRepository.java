@@ -10,6 +10,5 @@ import java.util.Optional;
 
 public interface TodoRepository extends JpaRepository<Todo, Integer> {
 
-    Optional<Todo> findById(int id);
     Page<Todo> findTodosByPersonId(int id, Pageable page);
 }
